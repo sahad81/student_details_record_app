@@ -3,14 +3,13 @@ import 'dart:developer';
 
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:students_records_app/src/model/studentmodel.dart';
 
  const studentdbName="studentdb";
 
-
-    ValueNotifier<List<Modelstudent>> studentlistNotifire =
-      ValueNotifier([]);
+var studentlistNotifire = RxList<Modelstudent>([]).obs;
 //========== add all student list ==============//
 Future <void> addstudent(Modelstudent value) async{
    final  studentDB = await Hive.openBox<Modelstudent>('Student_db');
@@ -18,7 +17,7 @@ Future <void> addstudent(Modelstudent value) async{
       studentlistNotifire.value.add(value);
    log(value.toString());
    value.id = _id;
-   studentlistNotifire.notifyListeners();
+   studentlistNotifire;
   // await studentDB.put(value.id, value);
 
 
@@ -31,7 +30,7 @@ Future <void> addstudent(Modelstudent value) async{
     final  studentDB = await Hive.openBox<Modelstudent>('Student_db');
     studentlistNotifire.value.clear();
     studentlistNotifire.value.addAll(studentDB.values);
-  studentlistNotifire.notifyListeners();
+  studentlistNotifire;
   }
   Future<void> delete(int id)async{
   final studentdb =
@@ -54,7 +53,7 @@ Future<void> restart() async {
     
      final studentDB = await Hive.openBox<Modelstudent>('student_db');
     await studentDB.put(id, value);
-    studentlistNotifire.notifyListeners;
+    studentlistNotifire;
      getAllstudents();
   }
 

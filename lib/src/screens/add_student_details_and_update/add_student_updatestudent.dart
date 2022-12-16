@@ -2,55 +2,43 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:students_records_app/src/database/studentlistdb.dart';
 import 'package:students_records_app/src/model/studentmodel.dart';
+import 'package:students_records_app/src/screens/add_student_details_and_update/getx_addstudent.dart';
 import 'package:students_records_app/src/screens/homescreen.dart';
 
-class AddScreen extends StatefulWidget {
- final int? noteid;
+class AddScreen extends StatelessWidget {
+  final int? noteid;
   final String? name;
   final String? age;
   final String? number;
   final String? place;
-   final String? image;
-  const AddScreen({super.key, this.noteid,  this.name,  this.age,  this.number,  this.place, this.image});
+  final String? image;
+  AddScreen(
+      {super.key,
+      this.noteid,
+      this.name,
+      this.age,
+      this.number,
+      this.place,
+      this.image});
 
-  @override
-  State<AddScreen> createState() => _AddScreenState();
-}
-
-class _AddScreenState extends State<AddScreen> {
-  File? imagefile;
-  final ImagePicker _picker = ImagePicker();
   final namecontroler = TextEditingController();
   final agecontroler = TextEditingController();
- final numbercontroler = TextEditingController();
-   final placecontroler = TextEditingController();
+  final numbercontroler = TextEditingController();
+  final placecontroler = TextEditingController();
 
-  final picker = ImagePicker();
+  final controler = Get.put(addsreencntroler());
 
-
-@override
-  void initState() {
-   if(widget.noteid!=null){
-
-placecontroler.text=widget.place.toString();
- namecontroler.text=widget.name.toString();
-agecontroler.text=widget.age.toString();
-numbercontroler.text=widget.number.toString();
-
-   }
-  }
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
-       backgroundColor: const Color(0xFF15485D),
+        backgroundColor: const Color(0xFF15485D),
         title: Text(
-        widget.noteid==null?  "ADD STUDENT DETAILS":"UPDATE STUDENT DETAILS"
-        ),
+            noteid == null ? "ADD STUDENT DETAILS" : "UPDATE STUDENT DETAILS"),
       ),
       body: SafeArea(
         child: Padding(
@@ -64,27 +52,26 @@ numbercontroler.text=widget.number.toString();
                   const SizedBox(
                     height: 10,
                   ),
-                
                   profieimage(context),
-            
-                   SizedBox(
+                  SizedBox(
                     height: 30,
                   ),
-                 
                   TextFormField(
                       controller: namecontroler,
                       decoration: const InputDecoration(
-                        labelText: "Name",
-                          border: OutlineInputBorder(), hintText: 'Name')),
+                          labelText: "Name",
+                          border: OutlineInputBorder(),
+                          hintText: 'Name')),
                   const SizedBox(
                     height: 10,
                   ),
                   TextFormField(
                     keyboardType: TextInputType.number,
-                    controller:agecontroler,
+                    controller: agecontroler,
                     decoration: const InputDecoration(
-                      labelText: "Age",
-                        border: OutlineInputBorder(), hintText: 'Age '),
+                        labelText: "Age",
+                        border: OutlineInputBorder(),
+                        hintText: 'Age '),
                   ),
                   SizedBox(
                     height: 10,
@@ -93,18 +80,19 @@ numbercontroler.text=widget.number.toString();
                     keyboardType: TextInputType.number,
                     controller: numbercontroler,
                     decoration: const InputDecoration(
-                      labelText: "Number",
-                        border: OutlineInputBorder(), hintText: 'Number'),
+                        labelText: "Number",
+                        border: OutlineInputBorder(),
+                        hintText: 'Number'),
                   ),
                   SizedBox(
                     height: 10,
                   ),
                   TextFormField(
-                
                     controller: placecontroler,
                     decoration: const InputDecoration(
-                      labelText: "Place",
-                        border: OutlineInputBorder(), hintText: 'place'),
+                        labelText: "Place",
+                        border: OutlineInputBorder(),
+                        hintText: 'place'),
                   ),
                   SizedBox(
                     height: 20,
@@ -114,13 +102,13 @@ numbercontroler.text=widget.number.toString();
                       butnclicked();
                     },
                     style: TextButton.styleFrom(
-                       backgroundColor: const Color(0xFF15485D),
+                      backgroundColor: const Color(0xFF15485D),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(
                           left: 40, right: 40, top: 10, bottom: 10),
-                      child:  Text(
-                     widget.noteid==null?   'SUBMIT':"update",
+                      child: Text(
+                        noteid == null ? 'SUBMIT' : "update",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -137,44 +125,45 @@ numbercontroler.text=widget.number.toString();
   Future<void> butnclicked() async {
     final name = namecontroler.text.trim();
     final age = agecontroler.text.trim();
-     final num = numbercontroler.text.trim();
-      final place = placecontroler.text.trim();
-   if(widget.noteid==null){
-     if (name.isEmpty || age.isEmpty||num.isEmpty||place.isEmpty) {
-      return;
-    } else {
- final model= Modelstudent(name: name, age: age, place: place, number: num,image: img);
-addstudent(model);
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => Homescreen(),));
-      //  final student =hivestudentdetails(age: _age, name: _name);
+    final num = numbercontroler.text.trim();
+    final place = placecontroler.text.trim();
+    if (noteid == null) {
+      if (name.isEmpty || age.isEmpty || num.isEmpty || place.isEmpty) {
+        return;
+      } else {
+        final model = Modelstudent(
+            name: name, age: age, place: place, number: num, image: img);
+        addstudent(model);
+        Get.to(Homescreen());
+        //  final student =hivestudentdetails(age: _age, name: _name);
 
-      // addstudent(student);
+        // addstudent(student);
+      }
+    } else {
+      final model = Modelstudent(
+          name: name,
+          age: age,
+          place: place,
+          number: num,
+          image: img,
+          id: noteid);
+      updatestudentdata(noteid!, model);
+      Get.to(Homescreen());
     }
-   }
-   else{
-     final model= Modelstudent(name: name, age: age, place: place,
-      number: num,image: img,id: widget.noteid);
-     updatestudentdata(widget.noteid!, model);
-       Navigator.of(context).push(MaterialPageRoute(builder: (context) => Homescreen(),));
-   }
   }
 
   Widget profieimage(BuildContext context1) {
     return Stack(
       children: <Widget>[
-    
-     
-         imagefile == null
+        controler.imagefile == null
             ? const CircleAvatar(
                 radius: 100, backgroundImage: AssetImage("asset\\image1.png"))
             : CircleAvatar(
                 radius: 100,
                 backgroundImage: FileImage(
-                  File(imagefile!.path),
+                  File(controler.imagefile!.path),
                 ),
               )
-              
-   
       ],
     );
   }
@@ -186,14 +175,17 @@ addstudent(model);
         return Container(
           width: double.infinity,
           height: 150,
-          color:   Color(0xFF15485D),
+          color: Color(0xFF15485D),
           child: Column(children: [
             SizedBox(
               height: 20,
             ),
             const Text(
               'Choice Profile Photo',
-              style: TextStyle(fontSize: 20, color: Colors.white,fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
             ),
             const SizedBox(
               height: 10,
@@ -247,13 +239,12 @@ addstudent(model);
     }
 
     final imagetmb = File(image.path);
-    setState(() {
-      imagefile = imagetmb;
-    });
-    imageadd(image); 
+    controler.tunbtoimagecam();
+    imageadd(image);
   }
-//======================pic image from gallery===========
 
+//======================pic image from gallery===========
+  final ImagePicker _picker = ImagePicker();
   Future gallery() async {
     XFile? pikedfileimage =
         await _picker.pickImage(source: ImageSource.gallery);
@@ -261,22 +252,27 @@ addstudent(model);
       return;
     }
     final tembgallery = File(pikedfileimage.path);
-    setState(() {
-      imagefile = tembgallery;
-    });
+    controler.tunbtoimagegal();
     imageadd(pikedfileimage);
   }
-  
-   String img="";
 
-   imageadd(XFile image) async{
-     
-     if(image == null){
-       return;
-     }else{
-      
-       final bytes = File(image.path).readAsBytesSync();
-       img = base64Encode(bytes);
-     }
-}
+  String img = "";
+
+  imageadd(XFile image) async {
+    if (image == null) {
+      return;
+    } else {
+      final bytes = File(image.path).readAsBytesSync();
+      img = base64Encode(bytes);
+    }
+  }
+
+  init() {
+    if (noteid != null) {
+      placecontroler.text = place.toString();
+      namecontroler.text = name.toString();
+      agecontroler.text = age.toString();
+      numbercontroler.text = number.toString();
+    }
+  }
 }
