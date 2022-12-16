@@ -42,10 +42,11 @@ class Profile extends StatelessWidget {
                             builder: (context) => AddScreen(
                                   noteid: id,
                                   age: age,
-                                  image: image,
+                       
                                   name: name,
                                   number: number,
                                   place: place,
+                                  image: image,
                                 )));
                       },
                       icon: Icon(Icons.edit),

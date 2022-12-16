@@ -14,9 +14,7 @@ class AddScreen extends StatefulWidget {
   final String? number;
   final String? place;
    final String? image;
-  const AddScreen({super.key, this.noteid,  this.name,  this.age,  this.number,  this.place,
-    this.image
-   });
+  const AddScreen({super.key, this.noteid,  this.name,  this.age,  this.number,  this.place, this.image});
 
   @override
   State<AddScreen> createState() => _AddScreenState();
@@ -29,15 +27,14 @@ class _AddScreenState extends State<AddScreen> {
   final agecontroler = TextEditingController();
  final numbercontroler = TextEditingController();
    final placecontroler = TextEditingController();
-  
-   String img="";
+
   final picker = ImagePicker();
 
 
 @override
   void initState() {
    if(widget.noteid!=null){
-img=widget.image!;
+
 placecontroler.text=widget.place.toString();
  namecontroler.text=widget.name.toString();
 agecontroler.text=widget.age.toString();
@@ -67,9 +64,9 @@ numbercontroler.text=widget.number.toString();
                   const SizedBox(
                     height: 10,
                   ),
-           
+                
                   profieimage(context),
-                 
+            
                    SizedBox(
                     height: 30,
                   ),
@@ -155,7 +152,8 @@ addstudent(model);
     }
    }
    else{
-     final model= Modelstudent(name: name, age: age, place: place, number: num,image: img,id: widget.noteid);
+     final model= Modelstudent(name: name, age: age, place: place,
+      number: num,image: img,id: widget.noteid);
      updatestudentdata(widget.noteid!, model);
        Navigator.of(context).push(MaterialPageRoute(builder: (context) => Homescreen(),));
    }
@@ -164,28 +162,19 @@ addstudent(model);
   Widget profieimage(BuildContext context1) {
     return Stack(
       children: <Widget>[
-        imagefile == null
+    
+     
+         imagefile == null
             ? const CircleAvatar(
                 radius: 100, backgroundImage: AssetImage("asset\\image1.png"))
             : CircleAvatar(
                 radius: 100,
                 backgroundImage: FileImage(
-                  (imagefile!),
+                  File(imagefile!.path),
                 ),
-              ),
-        Positioned(
-          bottom: 20,
-          right: 20,
-          child: InkWell(
-              onTap: () {
-                showBottom(context);
-              },
-              child: const Icon(
-                Icons.camera_alt,
-                size: 40,
-                color:   Color(0xFF15485D),
-              )),
-        ),
+              )
+              
+   
       ],
     );
   }
@@ -278,7 +267,7 @@ addstudent(model);
     imageadd(pikedfileimage);
   }
   
-
+   String img="";
 
    imageadd(XFile image) async{
      
