@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,10 +7,9 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:students_records_app/src/database/studentlistdb.dart';
 import 'package:students_records_app/src/model/studentmodel.dart';
-import 'package:students_records_app/src/screens/add_student_details_and_update/getx_addstudent.dart';
 import 'package:students_records_app/src/screens/homescreen.dart';
 
-class AddScreen extends StatelessWidget {
+class AddScreen extends StatefulWidget {
   final int? noteid;
   final String? name;
   final String? age;
@@ -25,20 +25,38 @@ class AddScreen extends StatelessWidget {
       this.place,
       this.image});
 
+  @override
+  State<AddScreen> createState() => _AddScreenState();
+}
+
+class _AddScreenState extends State<AddScreen> {
   final namecontroler = TextEditingController();
+
   final agecontroler = TextEditingController();
+
   final numbercontroler = TextEditingController();
+
   final placecontroler = TextEditingController();
 
-  final controler = Get.put(addsreencntroler());
 
+
+  init() {
+    if (widget.noteid != null) {
+      placecontroler.text = widget.place.toString();
+      namecontroler.text = widget.name.toString();
+      agecontroler.text = widget.age.toString();
+      numbercontroler.text = widget.number.toString();
+    }
+  }
+File? imagefile;
   @override
   Widget build(BuildContext context) {
+  init();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF15485D),
         title: Text(
-            noteid == null ? "ADD STUDENT DETAILS" : "UPDATE STUDENT DETAILS"),
+            widget.noteid == null ? "ADD STUDENT DETAILS" : "UPDATE STUDENT DETAILS"),
       ),
       body: SafeArea(
         child: Padding(
@@ -52,7 +70,13 @@ class AddScreen extends StatelessWidget {
                   const SizedBox(
                     height: 10,
                   ),
-                  profieimage(context),
+          
+                    
+                     
+                         profieimage(context),
+                         
+                    
+                  
                   SizedBox(
                     height: 30,
                   ),
@@ -108,7 +132,7 @@ class AddScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(
                           left: 40, right: 40, top: 10, bottom: 10),
                       child: Text(
-                        noteid == null ? 'SUBMIT' : "update",
+                        widget.noteid == null ? 'SUBMIT' : "update",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -127,7 +151,7 @@ class AddScreen extends StatelessWidget {
     final age = agecontroler.text.trim();
     final num = numbercontroler.text.trim();
     final place = placecontroler.text.trim();
-    if (noteid == null) {
+    if (widget.noteid == null) {
       if (name.isEmpty || age.isEmpty || num.isEmpty || place.isEmpty) {
         return;
       } else {
@@ -146,8 +170,8 @@ class AddScreen extends StatelessWidget {
           place: place,
           number: num,
           image: img,
-          id: noteid);
-      updatestudentdata(noteid!, model);
+          id: widget.noteid);
+      updatestudentdata(widget.noteid!, model);
       Get.to(Homescreen());
     }
   }
@@ -155,15 +179,27 @@ class AddScreen extends StatelessWidget {
   Widget profieimage(BuildContext context1) {
     return Stack(
       children: <Widget>[
-        controler.imagefile == null
+        imagefile == null
             ? const CircleAvatar(
                 radius: 100, backgroundImage: AssetImage("asset\\image1.png"))
             : CircleAvatar(
                 radius: 100,
                 backgroundImage: FileImage(
-                  File(controler.imagefile!.path),
-                ),
-              )
+                  File(imagefile!.path)
+                )
+              ),
+              Positioned(
+          bottom: 20,
+          right: 20,
+          child: InkWell(
+              onTap: () {
+                showBottom(context1);
+              },
+              child: const Icon(
+                Icons.camera_alt,
+                size: 40,
+                color:   Color(0xFF15485D),
+              )),)
       ],
     );
   }
@@ -238,21 +274,27 @@ class AddScreen extends StatelessWidget {
       return;
     }
 
-    final imagetmb = File(image.path);
-    controler.tunbtoimagecam();
+     final imagetmb = File(image.path);
+    setState(() {
+   imagefile=imagetmb;
+    });
+   
     imageadd(image);
   }
 
 //======================pic image from gallery===========
   final ImagePicker _picker = ImagePicker();
+
   Future gallery() async {
     XFile? pikedfileimage =
         await _picker.pickImage(source: ImageSource.gallery);
     if (pikedfileimage == null) {
       return;
     }
-    final tembgallery = File(pikedfileimage.path);
-    controler.tunbtoimagegal();
+      final tembgallery = File(pikedfileimage.path);
+   setState(() {
+     imagefile=tembgallery;
+   });
     imageadd(pikedfileimage);
   }
 
@@ -264,15 +306,6 @@ class AddScreen extends StatelessWidget {
     } else {
       final bytes = File(image.path).readAsBytesSync();
       img = base64Encode(bytes);
-    }
-  }
-
-  init() {
-    if (noteid != null) {
-      placecontroler.text = place.toString();
-      namecontroler.text = name.toString();
-      agecontroler.text = age.toString();
-      numbercontroler.text = number.toString();
     }
   }
 }

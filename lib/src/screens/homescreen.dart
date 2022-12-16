@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:students_records_app/src/database/studentlistdb.dart';
+import 'package:students_records_app/src/screens/add_student_details_and_update/add_student_updatestudent.dart';
 
 import 'package:students_records_app/src/screens/add_student_updatestudent.dart';
 import 'package:students_records_app/src/screens/studentprofile.dart';
