@@ -1,4 +1,4 @@
-# students_records_app
+# Student_Details_Record_app
 
 A new Flutter project.
 
